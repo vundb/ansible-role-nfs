@@ -1,0 +1,24 @@
+---
+
+# fail when distribution is not supported
+
+- name: check if distribution is supported
+  fail: msg="'{{ ansible_distribution }}' is not supported by this role"
+  when: ansible_distribution not in ["Gentoo"]
+
+
+# install nfs server
+
+- name: install nfs server
+  become: yes
+  portage:
+    package: net-fs/nfs-utils
+    state: emerged
+    newuse: yes
+    update: yes
+
+# ensure service are running on startup
+
+- name: ensure nfs is running
+  become: yes
+  service: name="nfs" state="started" enabled=yes
